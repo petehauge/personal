@@ -19,6 +19,6 @@
         }
     },
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -dscConfiguration ', parameters('dscConfiguration'), '\"')]"
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1 -dscConfiguration ', parameters('dscConfiguration'), '\"')]"
     }
 }
