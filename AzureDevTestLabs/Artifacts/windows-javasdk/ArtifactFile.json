@@ -2,7 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
     "title": "Install Java SE Development Kit via the Chocolatey installer",
     "publisher": "Microsoft",
-    "description": "Installs the Java SE 8 Development Kit via the Chocolatey installer.  More information:  https://chocolatey.org/packages/jdk8 ",
+    "description": "Installs the Java SE 8 Development Kit via the Chocolatey installer.",
     "tags": [
         "Windows",
         "Java",
