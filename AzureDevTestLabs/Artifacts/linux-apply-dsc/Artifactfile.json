@@ -1,0 +1,31 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
+    "title": "Apply Powershell DSC Script to Virtual Machine",
+    "publisher": "Microsoft",
+    "description": "Applies a Powershell DSC Script to a Virtual Machine.  This artifact will automatically install Powershell for Linux if not already present.  Requirements:  OpenSSL 1.0.0, More info here: https://docs.microsoft.com/en-us/powershell/dsc/lnxgettingstarted",
+    "tags": [
+        "Linux",
+        "DSC"
+    ],
+    "parameters": {
+        "OMI_RPM": {
+            "type": "string",
+            "displayName": "URL for OMI RPM Package for this distribution of Linux",
+            "allowEmpty": false,
+            "description": "URL for OMI RPM Package for this distribution of Linux - found on this page: https://github.com/Microsoft/omi/releases/tag/v1.4.2-5",
+            "defaultValue": "https://github.com/Microsoft/omi/releases/download/v1.4.2-5/omi-1.4.2-5.ssl_100.ulinux.x64.rpm"
+        },
+        "OMI_DEB": {
+            "type": "string",
+            "displayName": "URL for OMI DEB Package for this distribution of Linux",
+            "allowEmpty": false,
+            "description": "URL for OMI DEB Package for this distribution of Linux - found on this page: https://github.com/Microsoft/omi/releases/tag/v1.4.2-5",
+            "defaultValue": "https://github.com/Microsoft/omi/releases/download/v1.4.2-5/omi-1.4.2-5.ssl_100.ulinux.x64.deb"
+        }
+    },
+    "iconUri": "https://msdn.microsoft.com/dynimg/IC816884.png",
+    "targetOsType": "Linux",
+    "runCommand": {
+        "commandToExecute": "[concat('bash linux-apt-package.sh \"', parameters('OMI_RPM'), '\" \"', parameters('OMI_DEB'), '\"')]"
+    }
+}
