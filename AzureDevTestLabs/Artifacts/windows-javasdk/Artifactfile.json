@@ -11,6 +11,6 @@
     "iconUri": "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/128px-Java_programming_language_logo.svg.png",
     "targetOsType": "Windows",
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', '\"')]"
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1 \"')]"
     }
 }

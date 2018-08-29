@@ -6,11 +6,20 @@ Configuration FileTest {
     # The Node statement specifies which targets this configuration will be applied to.
     Node 'localhost' {
 
-        # The resource block ensures that the file is copied
-        File FileContent {
-            Ensure = 'Present'
-            SourcePath = 'D:\Sources\temp.txt'
-            DestinationPath = 'D:\Sources\temp2.txt'
+        # The resource block writes a sample file 
+        Script ScriptExample
+        {
+            SetScript = {
+                $sw = New-Object System.IO.StreamWriter("C:\TempFolder\TestFile.txt")
+                $sw.WriteLine("Some sample string")
+                $sw.Close()
+            }
+            TestScript = { 
+                Test-Path "C:\TempFolder\TestFile.txt" 
+            }
+            GetScript = { 
+                @{ Result = (Get-Content C:\TempFolder\TestFile.txt) } 
+            }
         }
     }
 }
@@ -26,8 +35,8 @@ Configuration FileTest2 {
         # The resource block ensures that the file is copied
         File FileContent {
             Ensure = 'Present'
-            SourcePath = 'D:\Sources\temp.txt'
-            DestinationPath = 'D:\Sources\temp3.txt'
+            SourcePath = 'C:\TempFolder\TestFile.txt'
+            DestinationPath = 'C:\TempFolder\TestFile2.txt'
         }
     }
 }
