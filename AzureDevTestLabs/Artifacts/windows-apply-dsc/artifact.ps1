@@ -21,21 +21,28 @@ if (Test-Path $localDSCFile) {
     Remove-Item -Path $localDSCFile -Force
 }
 
-# Write out the dsc configuration to a local file location
-$dscConfiguration | Out-File -FilePath $localDSCFile -Force
+# Save the URL to the local file location
+DownloadToFilePath $dscConfiguration $localDSCFile
 
-# Execute the DSC configuration
-. $localDSCFile
+if (Test-Path $localDSCFile) {
 
-# Figure out the configuration entries in the DSC configuration
-$configurationEntries = Get-Content $localDSCFile | Where-Object {$_.Trim().StartsWith("configuration", $true, $null)} | ForEach-Object {$_.Split(' ')[1].Replace('{','')}
-Write-Output "Configuration entries discovered: "
-Write-Output $configurationEntries
+    # Execute the DSC configuration
+    . $localDSCFile
 
-# Find the MOF files that were generated
-$MofDirectories = Get-ChildItem -Path (Resolve-Path .) -Recurse -Filter "*.mof" | ForEach-Object { $_.Directory }
+    # Figure out the configuration entries in the DSC configuration
+    $configurationEntries = Get-Content $localDSCFile | Where-Object {$_.Trim().StartsWith("configuration", $true, $null)} | ForEach-Object {$_.Split(' ')[1].Replace('{','')}
+    Write-Output "Configuration entries discovered: "
+    Write-Output $configurationEntries
 
-# Run the DsC Configurations
-$MofDirectories | ForEach-Object {Start-DscConfiguration -Path $_.FullName -Wait -Force}
+    # Find the MOF files that were generated
+    $MofDirectories = Get-ChildItem -Path (Resolve-Path .) -Recurse -Filter "*.mof" | ForEach-Object { $_.Directory }
 
-Write-Output "Completed applying the DSC configurations"
+    # Run the DsC Configurations
+    $MofDirectories | ForEach-Object {Start-DscConfiguration -Path $_.FullName -Wait -Force}
+
+    Write-Output "Completed applying the DSC configurations"
+
+}
+else {
+    Write-Error "Unable to download DSC Configuration from $dscConfiguration"
+}

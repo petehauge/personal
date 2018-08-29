@@ -11,14 +11,14 @@
     "targetOsType": "Windows",
     "parameters": {
         "dscConfiguration": {
-          "type": "string",
-          "controlType": "fileContents",
-          "displayName": "DSC Configuration",
-          "description": "Upload a DSC Configuration to apply to the VM.",
-          "allowEmpty": false
+            "type": "string",
+            "displayName": "File URL for DSC Configuration",
+            "allowEmpty": false,
+            "description": "File containing the DSC Configuration",
+            "defaultValue": "https://raw.githubusercontent.com/petehauge/personal/master/AzureDevTestLabs/Artifacts/windows-apply-dsc/SampleDSC.ps1"
         }
     },
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -dscConfiguration ''', replace(parameters('dscConfiguration'), '', ''''), '''\"')]"
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -dscConfiguration ''', parameters('dscConfiguration'), '''\"')]"
     }
 }
