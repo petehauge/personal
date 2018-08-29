@@ -1,6 +1,6 @@
 Configuration FileTest {
 
-    # Import the module that contains the resources we're using.
+    # Import the module that contains the resources we are using.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
 
     # The Node statement specifies which targets this configuration will be applied to.
@@ -26,7 +26,7 @@ Configuration FileTest {
 
 Configuration FileTest2 {
 
-    # Import the module that contains the resources we're using.
+    # Import the module that contains the resources we are using.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
 
     # The Node statement specifies which targets this configuration will be applied to.
