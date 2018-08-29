@@ -18,10 +18,7 @@
           "allowEmpty": false
         }
     },
-    "variables": {
-        "dscConfigCleaned": "[replace(parameters('dscConfiguration'), \"'\", \"''\"]"
-    },
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -dscConfiguration ''', variables('dscConfigCleaned'), '''@\"')]"
+        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -dscConfiguration ''', replace(parameters('dscConfiguration'), \"'\", \"''\"), '''@\"')]"
     }
 }
