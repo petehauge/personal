@@ -3,16 +3,13 @@
 PARAM_OMI_RPM_LOCATION=${1}
 PARAM_OMI_DEB_LOCATION=${2}
 
-trace() {
-    TRACE_DATE=$(date '+%F %T.%N')
-    echo ">>> $TRACE_DATE: $@" && echo ">>> $TRACE_DATE: $@" 1>&2
-}
+LOGCMD='logger -i -t AZDEVTST_LINUXDSC --'
 
-trace "Parameters:"
-trace "PARAM_OMI_RPM_LOCATION: $PARAM_OMI_RPM_LOCATION"
-trace "PARAM_OMI_DEB_LOCATION: $PARAM_OMI_DEB_LOCATION"
+$LOGCMD "Parameters:"
+$LOGCMD "PARAM_OMI_RPM_LOCATION: $PARAM_OMI_RPM_LOCATION"
+$LOGCMD "PARAM_OMI_DEB_LOCATION: $PARAM_OMI_DEB_LOCATION"
 
-# trace "Installing OMI"
+# $LOGCMD "Installing OMI"
 
 # sudo yum install omi
 
@@ -24,5 +21,5 @@ trace "PARAM_OMI_DEB_LOCATION: $PARAM_OMI_DEB_LOCATION"
 #rpm --version
 #installationStatus=$(echo $?)
 
-# trace "Installing DSC"
+# $LOGCMD "Installing DSC"
 
