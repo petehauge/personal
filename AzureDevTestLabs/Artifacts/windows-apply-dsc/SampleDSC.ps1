@@ -10,6 +10,7 @@ Configuration FileTest {
         Script ScriptExample
         {
             SetScript = {
+                New-Item -Path "C:\" -Name "TempFolder" -ItemType "directory" -Force
                 $sw = New-Object System.IO.StreamWriter("C:\TempFolder\TestFile.txt")
                 $sw.WriteLine("Some sample string")
                 $sw.Close()
