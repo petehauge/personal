@@ -26,6 +26,6 @@
     "iconUri": "https://msdn.microsoft.com/dynimg/IC816884.png",
     "targetOsType": "Linux",
     "runCommand": {
-        "commandToExecute": "[concat('bash linux-apt-package.sh \"', parameters('OMI_RPM'), '\" \"', parameters('OMI_DEB'), '\"')]"
+        "commandToExecute": "[concat('bash azuredeploy.sh \"', parameters('OMI_RPM'), '\" \"', parameters('OMI_DEB'), '\"')]"
     }
 }
