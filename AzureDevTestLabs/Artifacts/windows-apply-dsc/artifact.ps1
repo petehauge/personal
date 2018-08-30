@@ -5,20 +5,21 @@ Param
 )
 
 # Location to save the DSC configuration, subfolder from script location
-$dscPath = Join-Path -Path $env:TEMP -childPath "DSC"
+$dscPath = Join-Path -Path $PSScriptRoot -childPath "DSC"
 
 if (Test-Path $dscPath) {
     # If the directory exists, remove it, probably left over from prior iteration
-    Remove-Item -Recurse -Path $dscPath -Force
+    Remove-Item -Recurse -Path $dscPath -Force | Out-Null
 }
 
 # Create the DSC directory
-New-Item -Path $env:TEMP -Name "DSC" -ItemType Directory
+$newDir = New-Item -Path $env:TEMP -Name "DSC" -ItemType Directory
+Write-Output "Created directory for config files: $newDir" 
 
 $localDSCFile = Join-Path $dscPath "configuration.ps1"
 # if the local file exists, delete it (must be from prior iteration)
 if (Test-Path $localDSCFile) {
-    Remove-Item -Path $localDSCFile -Force
+    Remove-Item -Path $localDSCFile -Force | Out-Null
 }
 
 # Save the URL to the local file location
@@ -26,6 +27,11 @@ DownloadToFilePath $dscConfiguration $localDSCFile
 
 if (Test-Path $localDSCFile) {
 
+    # First make sure the machine is configured to accept DSC scripts
+    Write-Output "Ensuring the VM can apply DSC scripts via 'winrm quickconfig -quiet'"
+    winrm quickconfig -quiet
+
+    Write-Output "Executing the DSC Configuration"
     # Execute the DSC configuration
     . $localDSCFile
 
