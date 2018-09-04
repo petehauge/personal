@@ -9,7 +9,8 @@ $dscPath = Join-Path -Path $PSScriptRoot -childPath "DSC"
 
 if (Test-Path $dscPath) {
     # If the directory exists, remove it, probably left over from prior iteration
-    Remove-Item -Recurse -Path $dscPath -Force | Out-Null
+    Write-Output "Path $dscPath exists, removing it..."
+    Remove-Item -Recurse -Path $dscPath -Force
 }
 
 # Create the DSC directory
