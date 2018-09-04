@@ -32,12 +32,28 @@ if (Test-Path $localDSCFile) {
     Write-Output "Ensuring the VM can apply DSC scripts via 'winrm quickconfig -quiet'"
     winrm quickconfig -quiet
 
+    # Upgrading the version of NuGet package manager on the system, in case DSC script has Imports
+    Install-PackageProvider -Name NuGet -Force
+
+    # Grab the DSC file contents so we can inspect the configuration elements
+    $localDscFileContent = Get-Content $localDSCFile
+
+    Write-Output "Installing modules used in DSC file..."
+    $localDscFileContent | 
+        Where-Object {$_.Trim().StartsWith("Import-DscResource", $true, $null)} | 
+        ForEach-Object {"Install-Module -Name $($_.Split(' ')[-1]) -Force" } | 
+        Get-Unique -AsString |
+        ForEach-Object { 
+            Write-Output "Running command: $($_)"
+            Invoke-Expression $_ 
+        }
+
     Write-Output "Executing the DSC Configuration"
     # Execute the DSC configuration
     . $localDSCFile
 
     # Figure out the configuration entries in the DSC configuration
-    $configurationEntries = Get-Content $localDSCFile | Where-Object {$_.Trim().StartsWith("configuration", $true, $null)} | ForEach-Object {$_.Split(' ')[1].Replace('{','')}
+    $configurationEntries = $localDscFileContent | Where-Object {$_.Trim().StartsWith("configuration", $true, $null)} | ForEach-Object {$_.Split(' ')[1].Replace('{','')}
     Write-Output "Configuration entries discovered: "
     Write-Output $configurationEntries
 
