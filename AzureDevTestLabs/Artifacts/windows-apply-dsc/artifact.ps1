@@ -5,7 +5,7 @@ Param
 )
 
 # Location to save the DSC configuration, subfolder from script location
-$dscPath = Join-Path -Path $PSScriptRoot -childPath "DSC"
+$dscPath = Join-Path -Path $env:TEMP -childPath "DSC"
 
 if (Test-Path $dscPath) {
     # If the directory exists, remove it, probably left over from prior iteration
