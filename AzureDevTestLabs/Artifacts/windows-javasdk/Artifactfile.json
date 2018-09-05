@@ -10,7 +10,22 @@
     ],
     "iconUri": "https://upload.wikimedia.org/wikipedia/en/thumb/3/30/Java_programming_language_logo.svg/128px-Java_programming_language_logo.svg.png",
     "targetOsType": "Windows",
+    "parameters": {
+        "selectParam": {
+          "type": "string",
+          "displayName": "Choose version of Java Development Kit to install",
+          "description": "Only a selection from the list of JDK versions is allowed",
+          "defaultValue": "jdk10",
+          "allowEmpty": false,
+          "allowedValues": [
+            "jdk10",
+            "jdk8",
+            "jdk7",
+            "jdk6"
+          ]
+        }
+    },
     "runCommand": {
-        "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1 \"')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -JDKVersion ''', parameters('JDKVersion'), '''\"')]"
     }
 }
