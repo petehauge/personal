@@ -8,15 +8,16 @@
 #       This is necessary to ensure we capture errors inside the try-catch-finally block.
 $ErrorActionPreference = "Stop"
 
-# Ensure we set the working directory to that of the script.
-pushd $PSScriptRoot
-
 ###################################################################################################
 
 #
 # Functions used in this script.
 #
 $scriptFolder = Split-Path $MyInvocation.MyCommand.Path -Parent
+
+# Ensure we set the working directory to that of the script.
+pushd $scriptFolder
+
 $functionFiles = Get-ChildItem -Path $scriptFolder\* -Include "*artifact-funcs*.ps1" -Exclude "*.tests.ps1" 
 foreach($file in $functionFiles)
 {
