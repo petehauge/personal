@@ -1,0 +1,30 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
+    "title": "Copy an executable locally and execute it, passing the parameters provided",
+    "publisher": "Microsoft",
+    "description": "Copys the executable locally, launches it with the provided parameters and captures the output", 
+    "tags": [
+        "Windows",
+        "Exe",
+        "Run"
+    ],
+    "iconUri": "https://msdnshared.blob.core.windows.net/media/2017/03/image118.png",
+    "targetOsType": "Windows",
+    "parameters": {
+        "Executable": {
+          "type": "string",
+          "displayName": "Full path to executable",
+          "description": "Full path to the executable, if web-based path (http/https) provided, exe will be downloaded first before executing",
+          "allowEmpty": false
+        },
+        "Parameters": {
+            "type": "string",
+            "displayName": "Parameters to pass to executable, single quotes not allowed",
+            "description": "Full set of parameters to pass to the executable.  If single quotes are included, the artifact will fail",
+            "allowEmpty": true
+          }
+    },
+    "runCommand": {
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Executable ''', parameters('Executable'), ''' -Parameters ''', parameters('Parameters'), '''\"')]"
+    }
+}
