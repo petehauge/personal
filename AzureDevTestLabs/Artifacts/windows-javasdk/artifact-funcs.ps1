@@ -66,10 +66,10 @@ function InstallChocoPackages ($packageList)
 {
     $scriptFolder = Split-Path $MyInvocation.MyCommand.Path -Parent
 
-    $chocoScriptFile = "$scriptFolder\ChocolateyPackageInstaller.ps1"
+    $chocoScriptFile = "$scriptFolder\startChocolatey.ps1"
     if(Test-Path $chocoScriptFile)
     {
-        Invoke-Expression "$chocoScriptFile -RawPackagesList $packageList"
+        Invoke-Expression "$chocoScriptFile -PackageList $packageList"
     }
     else
     {
