@@ -64,8 +64,6 @@ function DownloadToFilePath ($downloadUrl, $targetFile)
 
 function InstallChocoPackages ($packageList)
 {
-    $scriptFolder = Split-Path $MyInvocation.MyCommand.Path -Parent
-
     $chocoScriptFile = "$scriptFolder\startChocolatey.ps1"
     if(Test-Path $chocoScriptFile)
     {
