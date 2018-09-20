@@ -64,10 +64,10 @@ function DownloadToFilePath ($downloadUrl, $targetFile)
 
 function InstallChocoPackages ($packageList)
 {
-    $chocoScriptFile = "$scriptFolder\startChocolatey.ps1"
+    $chocoScriptFile = "$scriptFolder\ChocolateyPackageInstaller.ps1"
     if(Test-Path $chocoScriptFile)
     {
-        Invoke-Expression "$chocoScriptFile -PackageList $packageList"
+        Invoke-Expression "$chocoScriptFile -RawPackagesList $packageList"
     }
     else
     {
