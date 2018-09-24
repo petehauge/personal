@@ -8,24 +8,17 @@
         "DSC"
     ],
     "parameters": {
-        "OMI_RPM": {
+        "dscConfiguration": {
             "type": "string",
-            "displayName": "URL for OMI RPM Package for this distribution of Linux",
+            "displayName": "File URL for DSC Configuration",
             "allowEmpty": false,
-            "description": "URL for OMI RPM Package for this distribution of Linux - found on this page: https://github.com/Microsoft/omi/releases/tag/v1.4.2-5",
-            "defaultValue": "https://github.com/Microsoft/omi/releases/download/v1.4.2-5/omi-1.4.2-5.ssl_100.ulinux.x64.rpm"
-        },
-        "OMI_DEB": {
-            "type": "string",
-            "displayName": "URL for OMI DEB Package for this distribution of Linux",
-            "allowEmpty": false,
-            "description": "URL for OMI DEB Package for this distribution of Linux - found on this page: https://github.com/Microsoft/omi/releases/tag/v1.4.2-5",
-            "defaultValue": "https://github.com/Microsoft/omi/releases/download/v1.4.2-5/omi-1.4.2-5.ssl_100.ulinux.x64.deb"
+            "description": "File containing the DSC Configuration",
+            "defaultValue": "https://raw.githubusercontent.com/petehauge/personal/master/AzureDevTestLabs/Artifacts/windows-apply-dsc/SampleDSC.ps1"
         }
     },
     "iconUri": "https://msdn.microsoft.com/dynimg/IC816884.png",
     "targetOsType": "Linux",
     "runCommand": {
-        "commandToExecute": "[concat('bash azuredeploy.sh \"', parameters('OMI_RPM'), '\" \"', parameters('OMI_DEB'), '\"')]"
+        "commandToExecute": "[concat('bash azuredeploy.sh \"', parameters('dscConfiguration'), '\" ')]"
     }
 }
