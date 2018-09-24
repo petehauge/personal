@@ -2,7 +2,7 @@
     "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2016-11-28/dtlArtifacts.json",
     "title": "Apply Powershell DSC Script to Virtual Machine",
     "publisher": "Microsoft",
-    "description": "Applies a Powershell DSC Script to a Virtual Machine.  This artifact will automatically install Powershell for Linux if not already present.  Requirements:  OpenSSL 1.0.0, More info here: https://docs.microsoft.com/en-us/powershell/dsc/lnxgettingstarted",
+    "description": "Applies a Powershell DSC Script to a Virtual Machine.  This artifact will automatically install Powershell for Linux and OMI Server if not already present.  Artifact works for RedHat 7, RedHat 6, Ubuntu 14.04, Ubuntu 16.04, Ubuntu 16.10, SUSE 12, More info here: https://docs.microsoft.com/en-us/powershell/dsc/lnxgettingstarted",
     "tags": [
         "Linux",
         "DSC"
