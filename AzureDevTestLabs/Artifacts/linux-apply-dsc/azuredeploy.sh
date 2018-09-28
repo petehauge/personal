@@ -116,13 +116,20 @@ if [ -f /etc/os-release ]; then
         PATH=$PATH:/opt/microsoft/dsc/Scripts
 
         # Copy the DSC modules over to the powershell directory so we can run the script
-        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $PSHOME/Modules -Container -Force"
+        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $env:USERPROFILE\Documents\WindowsPowerShell\Modules -Container -Force"
 
+        $LOGCMD "Generating MOF file from powershell script"
         # Run the DSC Script
         sudo pwsh ./dscscript.ps1
 
+        $LOGCMD "Finding all the MOF files..."
+        find . -name "*.mof" | while read filename; do $LOGCMD "MOF FILE: $filename"; done
+
+        $LOGCMD "Applying the DSC Configurations..."
         # Apply the MOF file
         find . -name "*.mof" | while read filename; do sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename; done
+
+        $LOGCMD "Completed applying DSC Configuration!"
 
     else
         $LOGCMD "Unable to download DSC configuration, please check URL"
