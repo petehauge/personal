@@ -13,7 +13,7 @@
             "displayName": "File URL for DSC Configuration",
             "allowEmpty": false,
             "description": "File containing the DSC Configuration",
-            "defaultValue": "https://raw.githubusercontent.com/petehauge/personal/master/AzureDevTestLabs/Artifacts/windows-apply-dsc/SampleDSC.ps1"
+            "defaultValue": "https://raw.githubusercontent.com/petehauge/personal/master/AzureDevTestLabs/Artifacts/linux-apply-dsc/SampleDSC.ps1"
         }
     },
     "iconUri": "https://msdn.microsoft.com/dynimg/IC816884.png",
