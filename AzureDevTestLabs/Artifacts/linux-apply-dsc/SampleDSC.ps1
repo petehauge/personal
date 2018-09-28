@@ -6,7 +6,7 @@ Configuration ExampleConfiguration
      {
          nxFile ExampleFile 
          {
-             DestinationPath = "/tmp/example.txt"
+             DestinationPath = "/dev/example.txt"
              Contents = "hello world `n"
              Ensure = "Present"
              Type = "File"

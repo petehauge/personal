@@ -49,9 +49,6 @@ if [ -f /etc/os-release ]; then
         "rhel:6.7" | "rhel:6.8" | "rhel:6.9" | "rhel:6.10")
             sudo rpm -Uvh https://packages.microsoft.com/config/rhel/6/packages-microsoft-prod.rpm
             ;;
-        "suse:12")
-            sudo rpm -Uvh https://packages.microsoft.com/config/sles/12/packages-microsoft-prod.rpm
-            ;;
         *)
             $LOGCMD "Distribution not supported: $ID:$VERSION_ID"
             exit 1
@@ -91,7 +88,7 @@ if [ -f /etc/os-release ]; then
 
             sudo dpkg -i dsc_package.deb
             ;;
-        "rhel" | "suse")
+        "rhel")
             # Install Powershell
             sudo yum install -y powershell
 
