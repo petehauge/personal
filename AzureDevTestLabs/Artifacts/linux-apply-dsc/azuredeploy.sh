@@ -4,82 +4,134 @@
 LOGCMD='logger -i -t AZDEVTST_APPLYDSC --'
 which logger
 if [ $? -ne 0 ] ; then
-    LOGCMD='echo [AZDEVTST_APPLYDSC] '
+    LOGCMD='echo [[AZDEVTST_APPLYDSC] '
 fi
 
-$LOGCMD "------ Parameters: ------"
-PARAM_DSC_CONFIGURATION=${1}
-$LOGCMD "PARAM_DSC_CONFIGURATION: $PARAM_DSC_CONFIGURATION"
+# Load in variables for distribution
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
 
-# See which package installer we have
-apt=`command -v apt-get`
-yum=`command -v yum`
+    $LOGCMD "------ Parameters: ------"
+    PARAM_DSC_CONFIGURATION=${1}
+    $LOGCMD "PARAM_DSC_CONFIGURATION: $PARAM_DSC_CONFIGURATION"
+    $LOGCMD "Linux Distribution: $ID:$VERSION_ID"
 
-# Setup Microsoft repository for packages
-# Details here: https://docs.microsoft.com/en-us/windows-server/administration/Linux-Package-Repository-for-Microsoft-Software
-$LOGCMD "------ Setup Microsoft repositories for RPM/DPKG ------"
-SystemInfo=`uname -a`
-if [$SystemInfo == *"RedHat7"*]; then
-    sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
-elif [$SystemInfo == *"RedHat6"*]; then
-    sudo rpm -Uvh https://packages.microsoft.com/config/rhel/6/packages-microsoft-prod.rpm
-elif [$SystemInfo == *"Ubuntu14"*]; then
-    wget https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-    sudo apt-get update
-elif [$SystemInfo == *"Ubuntu16.04"*]; then
-    wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-    sudo apt-get updateelse
-elif [$SystemInfo == *"Ubuntu16.10"*]; then
-    wget https://packages.microsoft.com/config/ubuntu/16.10/packages-microsoft-prod.deb
-    sudo dpkg -i packages-microsoft-prod.deb
-    sudo apt-get update
-elif [$SystemInfo == *"SUSE12"*]; then
-    sudo rpm -Uvh https://packages.microsoft.com/config/sles/12/packages-microsoft-prod.rpm
-else
-    $LOGCMD "This version of Linux is not supported for this artifact:  : "$SystemInfo
-    exit 1;
-fi
+    curl -L -o "dscscript.ps1" "$PARAM_DSC_CONFIGURATION"
+    if [ -f ./dscscript.ps1 ]; then
 
-$LOGCMD "------ Installing OMI ------"
-if [ -n "$apt" ]; then
-    sudo apt-get install omi
-elif [ -n "$yum" ]; then
-    sudo yum install omi -y
-else
-    $LOGCMD "Unable to find either apt-get or yum, cannot proceed.."
-    exit 1;
-fi
+        # See which package installer we have
+        apt=`command -v apt-get`
+        yum=`command -v yum`
 
-$LOGCMD "------ Installing Linux DSC ------"
-# Version of SSL available:
-SSL=`openssl version`
+        # Setup Microsoft repository for packages
+        # Details here: https://docs.microsoft.com/en-us/windows-server/administration/Linux-Package-Repository-for-Microsoft-Software
+        $LOGCMD "------ Setup Microsoft repositories for RPM/DPKG ------"
 
-# DSC package, info from here:  https://docs.microsoft.com/en-us/powershell/dsc/lnxgettingstarted
-if [$SystemInfo == *"RedHat"*] || [$SystemInfo == *"SUSE"*]; then
-    # RPM packages are appropriate for CentOS, Red Hat Enterprise Linux, SUSE Linux Enterprise Server, and Oracle Linux. 
-    if [$SSL == "OpenSSL 1.0"*]; then
-        curl -L -o "dsc_package.rpm" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_100.x64.rpm"
-    elif [$SSL == "OpenSSL 0.9.8"*]; then
-        curl -L -o "dsc_package.rpm" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_098.x64.rpm"
+        case "$ID:$VERSION_ID" in
+        "ubuntu:14.04")
+            wget https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
+            sudo dpkg -i packages-microsoft-prod.deb
+            sudo apt-get update
+            ;;
+        "ubuntu:16.04")
+            wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+            sudo dpkg -i packages-microsoft-prod.deb
+            sudo apt-get updateelse
+            ;;
+        "ubuntu:16.10")
+            wget https://packages.microsoft.com/config/ubuntu/16.10/packages-microsoft-prod.deb
+            sudo dpkg -i packages-microsoft-prod.deb
+            sudo apt-get update
+            ;;
+        "rhel:7.2" | "rhel:7.3" | "rhel:7.4" | "rhel:7.5")
+            sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
+            ;;
+        "rhel:6.7" | "rhel:6.8" | "rhel:6.9" | "rhel:6.10")
+            sudo rpm -Uvh https://packages.microsoft.com/config/rhel/6/packages-microsoft-prod.rpm
+            ;;
+        "suse:12")
+            sudo rpm -Uvh https://packages.microsoft.com/config/sles/12/packages-microsoft-prod.rpm
+            ;;
+        *)
+            $LOGCMD "Distribution not supported: $ID:$VERSION_ID"
+            exit 1
+            ;;
+        esac
+
+        $LOGCMD "------ Installing OMI ------"
+        if [[ -n "$apt" ]]; then
+            sudo apt-get install omi
+        elif [[ -n "$yum" ]]; then
+            sudo yum install omi -y
+        else
+            $LOGCMD "Unable to find either apt-get or yum, cannot proceed.."
+            exit 1;
+        fi
+
+        $LOGCMD "------ Installing Linux DSC ------"
+        # Version of SSL available:
+        SSL=`openssl version`
+
+        # DSC package, info from here:  https://docs.microsoft.com/en-us/powershell/dsc/lnxgettingstarted
+
+        case "$ID" in
+        "ubuntu")
+            # Install Powershell
+            sudo apt-get install -y powershell
+
+            # DEB packages are appropriate for Debian GNU/Linux and Ubuntu Server
+            if [[ $SSL == "OpenSSL 1.0"* ]]; then
+                curl -L -o "dsc_package.deb" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_100.x64.deb"
+            elif [[ $SSL == "OpenSSL 0.9.8"* ]]; then
+                curl -L -o "dsc_package.deb" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_098.x64.deb"
+            else
+                $LOGCMD "Version of Open SSL is not supported:  "$SSL
+                exit 1;
+            fi
+
+            sudo dpkg -i dsc_package.deb
+            ;;
+        "rhel" | "suse")
+            # Install Powershell
+            sudo yum install -y powershell
+
+            # RPM packages are appropriate for CentOS, Red Hat Enterprise Linux, SUSE Linux Enterprise Server, and Oracle Linux.
+            if [[ $SSL == "OpenSSL 1.0"* ]]; then
+                curl -L -o "dsc_package.rpm" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_100.x64.rpm"
+            elif [[ $SSL == "OpenSSL 0.9.8"* ]]; then
+                curl -L -o "dsc_package.rpm" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_098.x64.rpm"
+            else
+                $LOGCMD "Version of Open SSL is not supported:  "$SSL
+                exit 1;
+            fi
+            
+            sudo rpm -Uvh dsc_package.rpm
+            ;;
+        *)
+            $LOGCMD "Distribution not supported for DSC package: $ID:$VERSION_ID"
+            exit 1
+            ;;
+        esac
+
+        $LOGCMD "All Prerequisites for Linux DSC are installed!"
+
+        # Path to DSC python scripts
+        PATH=$PATH:/opt/microsoft/dsc/Scripts
+
+        # Copy the DSC modules over to the powershell directory so we can run the script
+        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $PSHOME/Modules -Container -Force"
+
+        # Run the DSC Script
+        sudo pwsh ./dscscript.ps1
+
+        # Apply the MOF file
+        find . -name "*.mof" | while read filename; do sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename; done
+
     else
-        $LOGCMD "Version of Open SSL is not supported:  "$SSL
-        exit 1;
-    fi
-elif [$SystemInfo == *"Ubuntu"*]; then
-    # DEB packages are appropriate for Debian GNU/Linux and Ubuntu Server
-    if [$SSL == "OpenSSL 1.0"*]; then
-        curl -L -o "dsc_package.deb" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_100.x64.deb"
-    elif [$SSL == "OpenSSL 0.9.8"*]; then
-        curl -L -o "dsc_package.deb" "https://github.com/Microsoft/PowerShell-DSC-for-Linux/releases/download/v1.1.1-294/dsc-1.1.1-294.ssl_098.x64.deb"
-    else
-        $LOGCMD "Version of Open SSL is not supported:  "$SSL
-        exit 1;
+        $LOGCMD "Unable to download DSC configuration, please check URL"
+        exit 1
     fi
 else
-    $LOGCMD "Must have RedHat, SUSE, or Ubuntu Linux distribution, cannot proceed.."
-    exit 1;
+    $LOGCMD "Could not discover linux distribution...  Cannot proceed"
+    exit 1
 fi
-
-$LOGCMD "All Prerequisites for Linux DSC are installed!"
