@@ -126,7 +126,7 @@ if [ -f /etc/os-release ]; then
 
         $LOGCMD "Generating MOF file from powershell script"
         # Change to correct directory and run the powershell script
-        sudo pwsh -Command "cd '$currentDir' ; . ./dscscript_add_a_bug.ps1"
+        sudo pwsh -Command "cd '$currentDir' ; . ./dscscript.ps1"
 
         $LOGCMD "Applying the DSC Configurations..."
         # Apply the MOF file and Log an error if we don't have any mof files
