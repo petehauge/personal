@@ -131,8 +131,7 @@ if [ -f /etc/os-release ]; then
         $LOGCMD "Applying the DSC Configurations..."
         # Apply the MOF file and Log an error if we don't have any mof files
         foundMOF=false
-        find $currentDir -name "*.mof" | while read filename;
-        do 
+        for filename in $(find $currentDir -name "*.mof" 2> /dev/null); do
             foundMOF=true
             $LOGCMD "MOF FILE: $filename"
             sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename
