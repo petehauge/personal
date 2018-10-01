@@ -10,6 +10,7 @@ fi
 # Setup directory for working
 mkdir AZDEVTEST_APPLYDSC
 cd AZDEVTEST_APPLYDSC
+currentDir=`pwd`
 
 # Load in variables for distribution
 if [ -f /etc/os-release ]; then
@@ -19,7 +20,7 @@ if [ -f /etc/os-release ]; then
     PARAM_DSC_CONFIGURATION=${1}
     $LOGCMD "PARAM_DSC_CONFIGURATION: $PARAM_DSC_CONFIGURATION"
     $LOGCMD "Linux Distribution: $ID:$VERSION_ID"
-    $LOGCMD "Current working directory: `pwd`"
+    $LOGCMD "Current working directory: $currentDir"
 
     curl -L -o "dscscript.ps1" "$PARAM_DSC_CONFIGURATION"
     if [ -f ./dscscript.ps1 ]; then
@@ -121,20 +122,23 @@ if [ -f /etc/os-release ]; then
         PATH=$PATH:/opt/microsoft/dsc/Scripts
 
         # Copy the DSC modules over to the powershell directory so we can run the script
-        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $env:$PSHOME\Modules -Container -Force"
+        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $PSHOME\Modules -Container -Force"
 
         $LOGCMD "Generating MOF file from powershell script"
-        # Run the DSC Script
-        sudo pwsh ./dscscript.ps1
+        # Change to correct directory and run the powershell script
+        sudo pwsh -Command "pwd '$currentDir' ; . dscscript.ps1"
 
         $LOGCMD "Finding all the MOF files..."
-        find . -name "*.mof" | while read filename; do $LOGCMD "MOF FILE: $filename"; done
+        find $currentDir -name "*.mof" | while read filename; do $LOGCMD "MOF FILE: $filename"; done
 
         $LOGCMD "Applying the DSC Configurations..."
         # Apply the MOF file
-        find . -name "*.mof" | while read filename; do sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename; done
+        find $currentDir -name "*.mof" | while read filename; do sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename; done
 
         $LOGCMD "Completed applying DSC Configuration!"
+
+        # Log a failure for now as part of debugging, will remove later
+        exit 1
 
     else
         $LOGCMD "Unable to download DSC configuration, please check URL"
