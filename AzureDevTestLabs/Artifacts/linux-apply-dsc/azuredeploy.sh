@@ -141,6 +141,7 @@ if [ -f /etc/os-release ]; then
             $LOGCMD "Completed applying DSC Configuration!"
         else
             $LOGCMD "Unable to find MOF file, could not apply DSC configuration"
+            exit 1
         fi
 
     else
