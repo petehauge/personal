@@ -122,20 +122,27 @@ if [ -f /etc/os-release ]; then
         PATH=$PATH:/opt/microsoft/dsc/Scripts
 
         # Copy the DSC modules over to the powershell directory so we can run the script
-        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $PSHOME\Modules -Container -Force"
+        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules/* -Recurse -Destination \$PSHOME\Modules -Container -Force"
 
         $LOGCMD "Generating MOF file from powershell script"
         # Change to correct directory and run the powershell script
-        sudo pwsh -Command "pwd '$currentDir' ; . dscscript.ps1"
-
-        $LOGCMD "Finding all the MOF files..."
-        find $currentDir -name "*.mof" | while read filename; do $LOGCMD "MOF FILE: $filename"; done
+        sudo pwsh -Command "cd '$currentDir' ; . ./dscscript_add_a_bug_to_test_log.ps1"
 
         $LOGCMD "Applying the DSC Configurations..."
-        # Apply the MOF file
-        find $currentDir -name "*.mof" | while read filename; do sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename; done
+        # Apply the MOF file and Log an error if we don't have any mof files
 
-        $LOGCMD "Completed applying DSC Configuration!"
+        find $currentDir -name "*.mof" | while read filename;
+        do 
+            foundMOF=true
+            $LOGCMD "MOF FILE: $filename"
+            sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename
+        done
+
+        if [ $foundMOF ]; then
+            $LOGCMD "Completed applying DSC Configuration!"
+        else
+            $LOGCMD "Unable to find MOF file, could not apply DSC configuration"
+        fi
 
         # Log a failure for now as part of debugging, will remove later
         exit 1
