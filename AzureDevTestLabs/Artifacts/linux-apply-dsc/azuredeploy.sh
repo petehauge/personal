@@ -143,9 +143,6 @@ if [ -f /etc/os-release ]; then
             $LOGCMD "Unable to find MOF file, could not apply DSC configuration"
         fi
 
-        # Log a failure for now as part of debugging, will remove later
-        exit 1
-
     else
         $LOGCMD "Unable to download DSC configuration, please check URL"
         exit 1
