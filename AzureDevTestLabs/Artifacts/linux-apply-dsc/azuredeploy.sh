@@ -126,11 +126,11 @@ if [ -f /etc/os-release ]; then
 
         $LOGCMD "Generating MOF file from powershell script"
         # Change to correct directory and run the powershell script
-        sudo pwsh -Command "cd '$currentDir' ; . ./dscscript.ps1"
+        sudo pwsh -Command "cd '$currentDir' ; . ./dscscript_add_a_bug.ps1"
 
         $LOGCMD "Applying the DSC Configurations..."
         # Apply the MOF file and Log an error if we don't have any mof files
-
+        foundMOF=false
         find $currentDir -name "*.mof" | while read filename;
         do 
             foundMOF=true
@@ -138,7 +138,7 @@ if [ -f /etc/os-release ]; then
             sudo /opt/microsoft/dsc/Scripts/StartDscConfiguration.py -configurationmof $filename
         done
 
-        if [ $foundMOF ]; then
+        if [[ $foundMOF = true ]]; then
             $LOGCMD "Completed applying DSC Configuration!"
         else
             $LOGCMD "Unable to find MOF file, could not apply DSC configuration"
