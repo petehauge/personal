@@ -7,6 +7,10 @@ if [ $? -ne 0 ] ; then
     LOGCMD='echo [[AZDEVTST_APPLYDSC] '
 fi
 
+# Setup directory for working
+mkdir AZDEVTEST_APPLYDSC
+cd AZDEVTEST_APPLYDSC
+
 # Load in variables for distribution
 if [ -f /etc/os-release ]; then
     . /etc/os-release
@@ -15,6 +19,7 @@ if [ -f /etc/os-release ]; then
     PARAM_DSC_CONFIGURATION=${1}
     $LOGCMD "PARAM_DSC_CONFIGURATION: $PARAM_DSC_CONFIGURATION"
     $LOGCMD "Linux Distribution: $ID:$VERSION_ID"
+    $LOGCMD "Current working directory: `pwd`"
 
     curl -L -o "dscscript.ps1" "$PARAM_DSC_CONFIGURATION"
     if [ -f ./dscscript.ps1 ]; then
@@ -116,7 +121,7 @@ if [ -f /etc/os-release ]; then
         PATH=$PATH:/opt/microsoft/dsc/Scripts
 
         # Copy the DSC modules over to the powershell directory so we can run the script
-        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $env:USERPROFILE\Documents\WindowsPowerShell\Modules -Container -Force"
+        sudo pwsh -Command "Copy-Item -Path /opt/microsoft/dsc/modules -Recurse -Destination $env:$PSHOME\Modules -Container -Force"
 
         $LOGCMD "Generating MOF file from powershell script"
         # Run the DSC Script
