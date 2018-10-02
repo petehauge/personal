@@ -13,6 +13,9 @@ cd AZDEVTEST_APPLYDSC
 currentDir=`pwd`
 $LOGCMD "Current working directory: $currentDir"
 
+ID=""
+VERSION_ID=""
+
 # Determine the distribution of Linux
 if [ -f /etc/os-release ]; then
     # Load in variables for distribution
@@ -28,7 +31,7 @@ fi
 
 $LOGCMD "Linux Distribution: $ID:$VERSION_ID"
 
-if [[ $ID && $VERSION_ID ]]; then
+if [[ -n $ID && -n $VERSION_ID ]]; then
 
     $LOGCMD "------ Parameters: ------"
     PARAM_DSC_CONFIGURATION=${1}
