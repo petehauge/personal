@@ -17,12 +17,16 @@ $LOGCMD "Current working directory: $currentDir"
 if [ -f /etc/os-release ]; then
     # Load in variables for distribution
     . /etc/os-release
+    $LOGCMD "Found standard linux distribution variable file"
 elif [ -f /etc/redhat-release ]; then
     # For some RedHat, we have a special case because /etc/os-release file isn't present
     ID="rhel"
     RedHatRelease=`cat /etc/redhat-release`
     VERSION_ID=$(echo $RedHatRelease | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')
+    $LOGCMD "Found RedHat linux distribution variable file"
 fi
+
+$LOGCMD "Linux Distribution: $ID:$VERSION_ID"
 
 if [[ $ID && $VERSION_ID ]]; then
 
