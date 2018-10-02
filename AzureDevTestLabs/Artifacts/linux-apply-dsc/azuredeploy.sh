@@ -12,9 +12,18 @@ mkdir AZDEVTEST_APPLYDSC
 cd AZDEVTEST_APPLYDSC
 currentDir=`pwd`
 
-# Load in variables for distribution
+# Determine the distribution of Linux
 if [ -f /etc/os-release ]; then
+    # Load in variables for distribution
     . /etc/os-release
+elif [-f /etc/redhat-release]; then
+    # For Redhat 6, we have a special case because /etc/os-release file isn't present
+    ID="rhel"
+    RedHatRelease=`cat /etc/redhat-release`
+    VERSION_ID=$(echo $RedHatRelease | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')
+fi
+
+if [[ $ID && $VERSION_ID ]]; then
 
     $LOGCMD "------ Parameters: ------"
     PARAM_DSC_CONFIGURATION=${1}
