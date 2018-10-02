@@ -19,6 +19,6 @@
     "iconUri": "https://msdn.microsoft.com/dynimg/IC816884.png",
     "targetOsType": "Linux",
     "runCommand": {
-        "commandToExecute": "[concat('sh azuredeploy.sh \"', parameters('dscConfiguration'), '\" ')]"
+        "commandToExecute": "[concat('bash azuredeploy.sh \"', parameters('dscConfiguration'), '\" ')]"
     }
 }
