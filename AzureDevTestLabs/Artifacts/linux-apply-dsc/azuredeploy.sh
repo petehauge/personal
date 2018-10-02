@@ -17,8 +17,8 @@ $LOGCMD "Current working directory: $currentDir"
 if [ -f /etc/os-release ]; then
     # Load in variables for distribution
     . /etc/os-release
-elif [-f /etc/redhat-release]; then
-    # For Redhat 6, we have a special case because /etc/os-release file isn't present
+elif [ -f /etc/redhat-release ]; then
+    # For some RedHat, we have a special case because /etc/os-release file isn't present
     ID="rhel"
     RedHatRelease=`cat /etc/redhat-release`
     VERSION_ID=$(echo $RedHatRelease | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/')
@@ -45,25 +45,28 @@ if [[ $ID && $VERSION_ID ]]; then
 
         case "$ID:$VERSION_ID" in
         "ubuntu:14.04")
+            curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+            curl https://packages.microsoft.com/config/ubuntu/14.04/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
             wget https://packages.microsoft.com/config/ubuntu/14.04/packages-microsoft-prod.deb
             sudo dpkg -i packages-microsoft-prod.deb
             sudo apt-get update
             ;;
         "ubuntu:16.04")
+            curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+            curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
             wget https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
             sudo dpkg -i packages-microsoft-prod.deb
-            sudo apt-get updateelse
+            sudo apt-get update
             ;;
         "ubuntu:16.10")
+            curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+            curl https://packages.microsoft.com/config/ubuntu/16.10/prod.list | sudo tee /etc/apt/sources.list.d/microsoft.list
             wget https://packages.microsoft.com/config/ubuntu/16.10/packages-microsoft-prod.deb
             sudo dpkg -i packages-microsoft-prod.deb
             sudo apt-get update
             ;;
         "rhel:7.2" | "rhel:7.3" | "rhel:7.4" | "rhel:7.5")
             sudo rpm -Uvh https://packages.microsoft.com/config/rhel/7/packages-microsoft-prod.rpm
-            ;;
-        "rhel:6.7" | "rhel:6.8" | "rhel:6.9" | "rhel:6.10")
-            sudo rpm -Uvh https://packages.microsoft.com/config/rhel/6/packages-microsoft-prod.rpm
             ;;
         *)
             $LOGCMD "Distribution not supported: $ID:$VERSION_ID"
