@@ -11,6 +11,7 @@ fi
 mkdir AZDEVTEST_APPLYDSC
 cd AZDEVTEST_APPLYDSC
 currentDir=`pwd`
+$LOGCMD "Current working directory: $currentDir"
 
 # Determine the distribution of Linux
 if [ -f /etc/os-release ]; then
