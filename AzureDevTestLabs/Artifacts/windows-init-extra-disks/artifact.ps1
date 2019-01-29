@@ -5,7 +5,7 @@ param(
 	[Parameter(Mandatory=$true)]
 	[string] $externalId,
 
-	[Parameter()]
+	[Parameter(Mandatory=$false)]
 	[string] $startingDriveLetter = 'F'
 
 )
