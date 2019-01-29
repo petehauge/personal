@@ -1,0 +1,32 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2015-01-01/dtlArtifacts.json",
+  "title": "Assign drive letters and format extra disks",
+  "description": "For every additional drive attached to the VM, initialize the volume, assign a drive letter and format.  This script also sets up the project folders and environment variables for the project",
+  "publisher": "Peter Hauge",
+  "tags": [
+    "Windows", "disk", "drive", "extra", "assign", "format", "letter"
+  ],
+  "iconUri": "https://azure.microsoft.com/svghandler/managed-disks/?width=200&amp;height=200",
+  "targetOsType": "Windows",
+  "parameters": {
+    "projectName": {
+      "type": "string",
+      "displayName": "Name of the project",
+      "description": "Name of the project, must be a valid string.  The directory name for the project's files will use this string."
+    },
+    "externalId": {
+      "type": "string",
+      "displayName": "External ID of the project",
+      "description": "External ID of the project.  This gets set as a machine-wide environment variable."
+    },
+    "startingDriveLetter": {
+      "type": "string",
+      "defaultValue": "F",
+      "displayName": "The first letter to use when assigning drive letters to new disks, default is 'F'",
+      "description": "The first letter to use when assigning drive letters to new disks, default is 'F'"
+    }
+  },
+  "runCommand": {
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -projectName ''', parameters('projectName'), ''' -externalId ''', parameters('externalId'), ''' -startingDriveLetter ''', parameters('startingDriveLetter'), '''\"')]"
+  }
+}
