@@ -16,8 +16,13 @@ pushd $PSScriptRoot
 #
 # Functions used in this script.
 #
-
-."./artifact-funcs.ps1"
+$scriptFolder = Split-Path $MyInvocation.MyCommand.Path -Parent
+$functionFiles = Get-ChildItem -Path $scriptFolder\* -Include "*artifact-funcs*.ps1" -Exclude "*.tests.ps1" 
+foreach($file in $functionFiles)
+{
+    $fileName = $file.Name
+    ."./$fileName"
+}
 
 ###################################################################################################
 

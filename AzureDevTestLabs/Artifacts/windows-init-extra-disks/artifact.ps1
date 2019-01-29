@@ -29,7 +29,7 @@ $existingDrive = $drives | Where-Object {$_.DeviceID -eq "$($startingDriveLetter
 
 if ($existingDrive -eq $null) {
     # Get all the 'raw' disks - these are ones that have been attached to the VM but not initialized
-    $newDisks = Get-Disk | Where partitionstyle -eq 'raw' | sort number
+    $newDisks = Get-Disk | Where-Object PartitionStyle -eq 'raw' | Sort-Object Number
     $driveLetter = $startingDriveLetter
 
     if ($newDisks -ne $null) {
