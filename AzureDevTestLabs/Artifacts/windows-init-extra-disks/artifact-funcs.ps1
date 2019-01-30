@@ -1,9 +1,5 @@
 ﻿function Handle-LastError
 {
-    [CmdletBinding()]
-    param(
-    )
-
     $message = $error[0].Exception.Message
     if ($message)
     {

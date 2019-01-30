@@ -6,7 +6,7 @@
   "tags": [
     "Windows", "disk", "drive", "extra", "assign", "format", "letter"
   ],
-  "iconUri": "https://azure.microsoft.com/svghandler/managed-disks/?width=200&amp;height=200",
+  "iconUri": "https://image.flaticon.com/icons/png/512/173/173697.png",
   "targetOsType": "Windows",
   "parameters": {
     "projectName": {
