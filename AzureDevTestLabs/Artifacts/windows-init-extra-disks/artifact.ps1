@@ -12,9 +12,11 @@ param(
 # Stop if there's an unexpected error
 $ErrorActionPreference = 'stop'
 
+Write-Output "Init Extra Disks script started with project:'$projectName' , externalid '$externalId', starting drive letter '$startingDriveLetter'"
+
 # We need a powershell module to set NTFS permissions (for the Add-NTFSAccess commandlet)
-Install-Module NTFSSecurity -Scope AllUsers -Force
-Import-Module NTFSSecurity
+#Install-Module NTFSSecurity -Scope AllUsers -Force
+#Import-Module NTFSSecurity
 
 $drives =  GET-WMIOBJECT win32_logicaldisk
 Write-Output "Existing Drives are:"
@@ -60,7 +62,7 @@ if ($existingDrive -eq $null) {
             New-Item -ItemType directory -Path $dir
         }
 	    
-        Add-NTFSAccess -Path $rootDir -Account 'Users' -AccessRights FullControl -AppliesTo ThisFolderSubfoldersAndFiles
+        # Add-NTFSAccess -Path $rootDir -Account 'Users' -AccessRights FullControl -AppliesTo ThisFolderSubfoldersAndFiles
 
         Write-Output "Script to map raw drives, create project folders & apply NTFS permissions completed!"
     }
