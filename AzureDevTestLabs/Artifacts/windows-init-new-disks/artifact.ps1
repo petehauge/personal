@@ -59,7 +59,9 @@ if ($existingDrive -eq $null) {
         }
 
         # Set user access, users can have full control over project folders
-        $rule = new-object System.Security.AccessControl.FileSystemAccessRule ("Users","FullControl","Allow")
+        $InheritanceFlag = [System.Security.AccessControl.InheritanceFlags]::ContainerInherit -bor [System.Security.AccessControl.InheritanceFlags]::ObjectInherit
+        $PropagationFlag = [System.Security.AccessControl.PropagationFlags]::None
+        $rule = new-object System.Security.AccessControl.FileSystemAccessRule ("BUILTIN\Users","FullControl", $InheritanceFlag, $PropagationFlag, "Allow")
         $acl = Get-ACL $rootDir
         $acl.SetAccessRule($rule)
         Set-ACL -Path $rootDir -AclObject $acl
