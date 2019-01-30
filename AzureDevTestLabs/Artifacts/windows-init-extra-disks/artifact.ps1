@@ -14,12 +14,6 @@ $ErrorActionPreference = 'stop'
 
 Write-Output "Init Extra Disks script started with project:'$projectName' , externalid '$externalId', starting drive letter '$startingDriveLetter'"
 
-# We need a powershell module to set NTFS permissions (for the Add-NTFSAccess commandlet)
-# To get powershell to auto-download the NTFSSecurity module, we need to update NuGet too
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-Install-Module NTFSSecurity -Scope AllUsers -Force
-Import-Module NTFSSecurity
-
 $drives =  GET-WMIOBJECT win32_logicaldisk
 Write-Output "Existing Drives are:"
 Write-Output ($drives | Format-Table)
@@ -52,19 +46,23 @@ if ($existingDrive -eq $null) {
         # Set up environment variables for the F drive
         $rootDir = "F:\ProjectFiles\"
         $projectName = $projectName.Replace('-',' ')
-        $dir = $rootDir + ($projectName.Replace('-',' '))
+        $projectDirectory = $rootDir + ($projectName.Replace('-',' '))
 
         [Environment]::SetEnvironmentVariable("DataDirPath", $rootDir, "Machine")
         [Environment]::SetEnvironmentVariable("ProjectFolder", $projectName, "Machine")
         [Environment]::SetEnvironmentVariable("ExternalProjectId", $externalId, "Machine")
 
-        # Set user access, users can have full control over project folders
 
-        if(!(Test-Path -Path $dir )) {
-            New-Item -ItemType directory -Path $dir
+        # Create the project folder if it doesn't exist
+        if(!(Test-Path -Path $projectDirectory )) {
+            New-Item -ItemType directory -Path $projectDirectory
         }
-	    
-        Add-NTFSAccess -Path $rootDir -Account 'Users' -AccessRights FullControl -AppliesTo ThisFolderSubfoldersAndFiles
+
+        # Set user access, users can have full control over project folders
+        $rule = new-object System.Security.AccessControl.FileSystemAccessRule ("Users","FullControl","Allow")
+        $acl = Get-ACL $rootDir
+        $acl.SetAccessRule($rule)
+        Set-ACL -Path $rootDir -AclObject $acl
 
         Write-Output "Script to map raw drives, create project folders & apply NTFS permissions completed!"
     }
