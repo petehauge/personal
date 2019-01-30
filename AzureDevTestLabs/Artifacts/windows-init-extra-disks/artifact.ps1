@@ -5,7 +5,7 @@ param(
 	[Parameter(Mandatory=$true)]
 	[string] $externalId,
 
-	[Parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$false)]
 	[string] $startingDriveLetter = 'F'
 
 )
@@ -15,8 +15,10 @@ $ErrorActionPreference = 'stop'
 Write-Output "Init Extra Disks script started with project:'$projectName' , externalid '$externalId', starting drive letter '$startingDriveLetter'"
 
 # We need a powershell module to set NTFS permissions (for the Add-NTFSAccess commandlet)
-#Install-Module NTFSSecurity -Scope AllUsers -Force
-#Import-Module NTFSSecurity
+# To get powershell to auto-download the NTFSSecurity module, we need to update NuGet too
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Install-Module NTFSSecurity -Scope AllUsers -Force
+Import-Module NTFSSecurity
 
 $drives =  GET-WMIOBJECT win32_logicaldisk
 Write-Output "Existing Drives are:"
@@ -62,7 +64,7 @@ if ($existingDrive -eq $null) {
             New-Item -ItemType directory -Path $dir
         }
 	    
-        # Add-NTFSAccess -Path $rootDir -Account 'Users' -AccessRights FullControl -AppliesTo ThisFolderSubfoldersAndFiles
+        Add-NTFSAccess -Path $rootDir -Account 'Users' -AccessRights FullControl -AppliesTo ThisFolderSubfoldersAndFiles
 
         Write-Output "Script to map raw drives, create project folders & apply NTFS permissions completed!"
     }
