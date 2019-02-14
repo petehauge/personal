@@ -3,26 +3,26 @@ Param
 	[Parameter(Mandatory=$true)]
     [string] $Users,
 
-    [Parameter(Mandatory=$true)]
+    [Paramter(Mandatory=$true)]
     [string] $Group,
 
-    [bool] $AddOnly = $true,
-    [bool] $KeepSystemAccounts = $true
+    [Parameter]
+    [bool] $KeepSystemAccounts
 )
 
 Write-Output "---------------------------------"
 Write-Output "windows-update-local-group artifact called with the following parameters:"
 Write-Output "     Users = $Users"
 Write-Output "     Group = $Group"
-Write-Output "     AddOnly = $AddOnly"
 Write-Output "     KeepSystemAccounts = $KeepSystemAccounts"
 Write-Output "---------------------------------"
 
 Write-Output "All Existing Groups + Users:"
-$groups = Get-LocalGroup
+
+$groups = ([ADSI]"WinNT://$env:COMPUTERNAME").psbase.children | Where-Object {$_.psbase.SchemaClassName -eq "group"} | ForEach-Object {$_.Path -replace "WinNT://(.*)$env:COMPUTERNAME/", "" }
 foreach ($grp in $groups) {
     Write-Output "Group Name: $grp"
-    $users = ([ADSI]"WinNT://./$grp").psbase.Invoke('Members') | % {
+    $users = ([ADSI]"WinNT://$env:COMPUTERNAME/$grp").psbase.Invoke('Members') | % {
                          ([ADSI]$_).InvokeGet('AdsPath')
                      }
     $users | ForEach-Object {Write-Output "   $_"}
@@ -58,3 +58,4 @@ else {
 
 
 #>
+

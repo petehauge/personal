@@ -8,7 +8,7 @@
     "user",
     "group"
   ],
-  "iconUri": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/New_user_icon-01.svg/1063px-New_user_icon-01.svg.png",
+  "iconUri": "https://raw.githubusercontent.com/RRZE-PP/rrze-icon-set/master/tango/150x150/actions/add-participant.png",
   "targetOsType": "Windows",
   "parameters": {
     "Users": {
