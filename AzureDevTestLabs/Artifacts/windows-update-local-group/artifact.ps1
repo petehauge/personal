@@ -3,7 +3,7 @@ Param
 	[Parameter(Mandatory=$true)]
     [string] $Users,
 
-    [Paramter(Mandatory=$true)]
+    [Parameter(Mandatory=$true)]
     [string] $Group,
 
     [Parameter]
