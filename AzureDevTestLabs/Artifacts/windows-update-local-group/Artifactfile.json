@@ -36,6 +36,6 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Users ''', parameters('Users'), ''' -Group ''', parameters('Group'), ''' -KeepSystemAccounts ''', parameters('KeepSystemAccounts'), ''' -AddOnly ''', parameters('AddOnly'), '''\"')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Users ''', parameters('Users'), ''' -Group ''', parameters('Group'), ''' -KeepSystemAccounts:$', parameters('KeepSystemAccounts'), ' -AddOnly:$', parameters('AddOnly'), '\"')]"
   }
 }
