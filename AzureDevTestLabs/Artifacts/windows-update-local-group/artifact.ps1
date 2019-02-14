@@ -6,10 +6,7 @@ Param
     [Parameter(Mandatory=$true)]
     [string] $Group,
 
-    [Parameter]
     [bool] $AddOnly = $true,
-
-    [Parameter]
     [bool] $KeepSystemAccounts = $true
 )
 
