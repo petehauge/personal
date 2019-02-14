@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2015-01-01/dtlArtifacts.json",
+  "title": "Update local group to include only list of specified users",
+  "description": "Updates the specified gruop to include only the provied account(s) on the target virtual machine.  These can be specified as a local user or a domain user, local users can be specified as 'user' and domain users as 'domain\\user'.  After this artifact executes, the group will contain only the list of users specified in the 'Users' parameter.",
+  "publisher": "Microsoft",
+  "tags": [
+    "windows",
+    "user",
+    "group"
+  ],
+  "iconUri": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/New_user_icon-01.svg/1063px-New_user_icon-01.svg.png",
+  "targetOsType": "Windows",
+  "parameters": {
+    "Users": {
+      "type": "string",
+      "displayName": "User Account(s)",
+      "description": "The user accounts (e.g. 'domain\\user' or 'user') that should be included in the specified group.  This can be a comma (',') delimited list of multiple users and the specified group will be modified to only include this list of users (add/remove as appropriate)"
+    },
+    "Group": {
+      "type": "string",
+      "displayName": "Group",
+      "defaultValue": "Administrators",
+      "description": "The Group to modify on the target Virtual Machine"
+    },
+    "KeepSystemAccounts": {
+      "type": "bool",
+      "displayName": "Keep System Accounts",
+      "defaultValue": true,
+      "description": "While we're updating the groups, should we keep system accounts even if they aren't specified on the 'Users' parameter?  If 'true', we will leave the system accounts in the group."
+    }
+  },
+  "runCommand": {
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Users ''', parameters('Users'), ''' -Group ''', parameters('Group'), ''' -KeepSystemAccounts ''', parameters('KeepSystemAccounts'), '''\"')]"
+  }
+}
