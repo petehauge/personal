@@ -22,6 +22,12 @@
       "defaultValue": "Administrators",
       "description": "The Group to modify on the target Virtual Machine"
     },
+    "AddOnly": {
+      "type": "bool",
+      "displayName": "Add Only (do not remove users)",
+      "defaultValue": true,
+      "description": "If True, we will only add users to the group.  If False, we will add users AND remove any users who aren't in the list specified."
+    },
     "KeepSystemAccounts": {
       "type": "bool",
       "displayName": "Keep System Accounts",
@@ -30,6 +36,6 @@
     }
   },
   "runCommand": {
-    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Users ''', parameters('Users'), ''' -Group ''', parameters('Group'), ''' -KeepSystemAccounts ''', parameters('KeepSystemAccounts'), '''\"')]"
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1', ' -Users ''', parameters('Users'), ''' -Group ''', parameters('Group'), ''' -KeepSystemAccounts ''', parameters('KeepSystemAccounts'), ''' -AddOnly ''', parameters('AddOnly'), '''\"')]"
   }
 }
