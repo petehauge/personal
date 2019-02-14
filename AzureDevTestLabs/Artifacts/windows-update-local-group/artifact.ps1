@@ -6,14 +6,15 @@ Param
     [Parameter(Mandatory=$true)]
     [string] $Group,
 
-    [bool] $KeepSystemAccounts = $true,
-    [bool] $AddOnly = $true
+    [bool] $AddOnly = $true,
+    [bool] $KeepSystemAccounts = $true
 )
 
 Write-Output "---------------------------------"
 Write-Output "windows-update-local-group artifact called with the following parameters:"
 Write-Output "     Users = $Users"
 Write-Output "     Group = $Group"
+Write-Output "     AddOnly = $AddOnly"
 Write-Output "     KeepSystemAccounts = $KeepSystemAccounts"
 Write-Output "---------------------------------"
 
