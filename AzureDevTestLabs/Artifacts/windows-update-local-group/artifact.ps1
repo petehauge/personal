@@ -54,7 +54,7 @@ if ($groups -contains $Group) {
     # We can't use Get-LocalGroupMember because of a powershell bug:  https://github.com/PowerShell/PowerShell/issues/2996 
     # Method copied from here:  https://p0w3rsh3ll.wordpress.com/2016/06/14/any-documented-adsi-changes-in-powershell-5-0/
     $existingUsers = $groupObj.psbase.Invoke('Members') | % {
-                         ([ADSI]$_).InvokeGet('adspath').Replace('WinNT://', '')
+                         ([ADSI]$_).InvokeGet('adspath').Replace('WinNT://WORKGROUP', '').Replace('WinNT://', '')
                      }
 
     $usersList = $Users.Split(',') | ForEach-Object {
