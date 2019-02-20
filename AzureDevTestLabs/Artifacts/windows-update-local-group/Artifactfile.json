@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2015-01-01/dtlArtifacts.json",
   "title": "Update local group to include only list of specified users",
-  "description": "Updates the specified gruop to include only the provied account(s) on the target virtual machine.  These can be specified as a local user or a domain user, local users can be specified as 'user' and domain users as 'domain\\user'.  After this artifact executes, the group will contain only the list of users specified in the 'Users' parameter.",
+  "description": "Updates the specified group to include only the provied account(s) on the target virtual machine.  These can be specified as a local user or a domain user, local users can be specified as 'user' and domain users as 'domain\\user'.  After this artifact executes, the group will contain only the list of users specified in the 'Users' parameter.",
   "publisher": "Microsoft",
   "tags": [
     "windows",
