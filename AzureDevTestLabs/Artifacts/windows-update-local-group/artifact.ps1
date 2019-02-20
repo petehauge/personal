@@ -57,7 +57,16 @@ if ($groups -contains $Group) {
                          ([ADSI]$_).InvokeGet('adspath').Replace('WinNT://', '')
                      }
 
-    $usersList = $Users.Split(',') | ForEach-Object { $_.Replace('\','/') }
+    $usersList = $Users.Split(',') | ForEach-Object {
+        if ($_ -match '.+[/\\].+') {
+            # If the user is already formatted as domain\user, then just fix the slashes if necessary
+            $_.Replace('\','/') 
+        }
+        else {
+            # If the user isn't formatted as domain\user, we need to do it.  Assume local machine
+            "$env:COMPUTERNAME/$_"
+        }
+    }
 
     # Add the list of users not already in the group
     $usersList | ForEach-Object {
