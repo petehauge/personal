@@ -46,14 +46,14 @@ function Select-AzureModuleVersion {
     }
     else {
         if ($MajorVersion -eq 1) {
-            Import-Module -Name Az -MinimumVersion "$MajorVersion.0.0" -MaximumVersion "$MajorVersion.9.9" -Force  -AllowClobber
+            Import-Module -Name Az -MinimumVersion "$MajorVersion.0.0" -MaximumVersion "$MajorVersion.9.9" -Force 
             $module = Get-Module -Name Az
             if ($module) {
                 Write-Output "Azure Module loaded (Az), version $($module.Version.ToString())"
             }
         }
         else {
-            Import-Module -Name AzureRm -MinimumVersion "$MajorVersion.0.0" -MaximumVersion "$MajorVersion.9.9" -Force  -AllowClobber
+            Import-Module -Name AzureRm -MinimumVersion "$MajorVersion.0.0" -MaximumVersion "$MajorVersion.9.9" -Force
             $module = Get-Module -Name AzureRm
             if ($module) {
                 Write-Output "Azure Modules loaded (AzureRm), version $($module.Version.ToString())"
@@ -128,6 +128,31 @@ function Uninstall-AzureModules {
             #if the module version is blank, let's assume that it's the main version above...  this is a workaround
             $module.Version = $Version
         }
+
+        Write-Host ('Uninstalling {0} version {1}' -f $module.name,$module.version)
+        try {
+            Uninstall-Module -Name $module.name -RequiredVersion $module.version -Force:$Force -ErrorAction Stop
+        } catch {
+            Write-Host ("`t" + $_.Exception.Message)
+        }
+    }
+}
+
+# Function to remove all Az.* and AzureRm.* modules
+# Copied and tweaked from this location:  https://stackoverflow.com/questions/34204373/how-to-clean-up-bad-azure-powershell-uninstall
+function Uninstall-AllAzureModules {
+
+    $AllModules = @()
+
+    Get-InstalledModule -Name Az.* | ForEach-Object {
+        $AllModules += New-Object -TypeName psobject -Property @{name=$_.Name; version=$_.Version}
+    }
+
+    Get-InstalledModule -Name AzureRm.* | ForEach-Object {
+        $AllModules += New-Object -TypeName psobject -Property @{name=$_.Name; version=$_.Version}
+    }
+
+    foreach ($module in $AllModules) {
 
         Write-Host ('Uninstalling {0} version {1}' -f $module.name,$module.version)
         try {
