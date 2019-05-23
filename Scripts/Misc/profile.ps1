@@ -144,11 +144,7 @@ function Uninstall-AllAzureModules {
 
     $AllModules = @()
 
-    Get-InstalledModule -Name Az.* | ForEach-Object {
-        $AllModules += New-Object -TypeName psobject -Property @{name=$_.Name; version=$_.Version}
-    }
-
-    Get-InstalledModule -Name AzureRm.* | ForEach-Object {
+    Get-InstalledModule | Where-Object {$_.Name -eq "Az" -or $_.Name -eq "AzureRm" -or $_.Name -like "Az.*" -or $_.Name -like "Azure*"} | ForEach-Object {
         $AllModules += New-Object -TypeName psobject -Property @{name=$_.Name; version=$_.Version}
     }
 
@@ -156,7 +152,7 @@ function Uninstall-AllAzureModules {
 
         Write-Host ('Uninstalling {0} version {1}' -f $module.name,$module.version)
         try {
-            Uninstall-Module -Name $module.name -RequiredVersion $module.version -Force:$Force -ErrorAction Stop
+            Uninstall-Module -Name $module.name -RequiredVersion $module.version -Force:$Force -AllowPrerelease -ErrorAction Stop
         } catch {
             Write-Host ("`t" + $_.Exception.Message)
         }
