@@ -158,3 +158,8 @@ function Uninstall-AllAzureModules {
         }
     }
 }
+
+function Import-DtlLibrary {
+    Remove-Module -Name Az.DevTestLabs2 -ErrorAction SilentlyContinue
+    Import-Module "D:\Sources\azure-devtestlab\samples\DevTestLabs\Modules\Library\Az.DevTestLabs2.psm1"
+}
