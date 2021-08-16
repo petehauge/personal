@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-devtestlab/master/schemas/2015-01-01/dtlArtifacts.json",
+  "title": "Join COMPANY's Domain",
+  "description": "This artifact joins the virtual machine to the corporate domain.  After execution of the artifact it will be rebooted automatically.",
+  "publisher": "DOMAIN",
+  "tags": [
+    "Windows"
+  ],
+  "iconUri": "https://c.s-microsoft.com/en-us/CMSImages/microsoft_logo_56x56.png?version=ad0d2fa7-0ee8-4e82-ddbf-8ea5dc9d9c23",
+  "targetOsType": "Windows",
+  "runCommand": {
+    "commandToExecute": "[concat('powershell.exe -ExecutionPolicy bypass \"& ./artifact-main.ps1','\"')]"
+  }
+}
