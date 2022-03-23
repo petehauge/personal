@@ -25,7 +25,3 @@ Write-Host "Tenant Id: $($sub.TenantId)"
 Write-Host "Object Id: $($ServicePrincipal.Id)"
 Write-Host "--------------------------------------------------"
 
-Start-Sleep -Seconds 30
-
-New-AzRoleAssignment -ObjectId $ServicePrincipal.Id -Scope "/subscriptions/$($sub.Id)" -RoleDefinitionName "Contributor"
-
