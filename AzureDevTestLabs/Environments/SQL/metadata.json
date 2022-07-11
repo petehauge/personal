@@ -1,0 +1,6 @@
+{
+  "itemDisplayName": "Azure SQL Database",
+  "description": "This template creates an Azure SQL Database.",
+  "githubUsername": "Microsoft",
+  "summary": "Deploys an Azure SQL database as an environment in a DevTest Lab."
+}
