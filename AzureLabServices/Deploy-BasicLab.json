@@ -1,36 +1,78 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "Contributor Object Ids": {
+        "LabName": {
             "type": "string",
-            "defaultValue": "",
+            "value": "Ethical-Hacking-Lab"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
             "metadata": {
-                "description": "User object IDs (comma seperated) to grant contributor rights on the environment resource group.  If left blank, the resource group will be created but no additional permissions will be added"
+              "description": "Location for all resources."
             }
+          },
+        "AdminUser": {
+            "type": "string"
+        },
+        "AdminPassword": {
+            "type": "securestring"
         }
     },
     "variables": {
-        "roleDefinition_Contributor": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "contributorUserIds": "[split(trim(parameters('Contributor Object Ids')), ',')]"
+        "labPlans_name": "LabPlan-Basic-WestUS",
+        "externalGalleryId": "/subscriptions/39df6a21-006d-4800-a958-2280925030cb/resourceGroups/SharedImageGalleryRG/providers/Microsoft.Compute/galleries/EnterpriseSharedImages"
     },
-    "resources": [
+    "resources": [        
         {
-            "condition": "[greater(length(trim(parameters('Contributor Object Ids'))), 0)]",
-            "name": "[guid(variables('roleDefinition_Contributor'), trim(variables('contributorUserIds')[copyIndex()]))]",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "copy": {
-                "name": "roleAssignmentCopy",
-                "count": "[length(variables('contributorUserIds'))]"
-            },
+            "type": "Microsoft.LabServices/labs",
+            "apiVersion": "2022-08-01",
+            "name": "[parameters('LabName')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
             "properties": {
-                "roleDefinitionId": "[variables('roleDefinition_Contributor')]",
-                "principalId": "[trim(variables('contributorUserIds')[copyIndex()])]",
-                "scope": "[resourceGroup().id]"
+                "networkProfile": {},
+                "autoShutdownProfile": {
+                    "shutdownOnDisconnect": "Enabled",
+                    "shutdownWhenNotConnected": "Enabled",
+                    "shutdownOnIdle": "LowUsage",
+                    "disconnectDelay": "PT15M",
+                    "noConnectDelay": "PT15M",
+                    "idleDelay": "PT15M"
+                },
+                "connectionProfile": {
+                    "webSshAccess": "None",
+                    "webRdpAccess": "None",
+                    "clientSshAccess": "None",
+                    "clientRdpAccess": "Public"
+                },
+                "virtualMachineProfile": {
+                    "createOption": "TemplateVM",
+                    "imageReference": {
+                        "id": "[concat(parameters('galleries_EnterpriseSharedImages_externalid'), '/images/Ethical-Hacking')]"
+                    },
+                    "sku": {
+                        "name": "Classic_Dsv4_4_16GB_128_P_SSD",
+                        "capacity": 0
+                    },
+                    "additionalCapabilities": {
+                        "installGpuDrivers": "Disabled"
+                    },
+                    "usageQuota": "PT10H",
+                    "useSharedPassword": "Enabled",
+                    "adminUser": {
+                        "username": "[parameters('AdminUser')]",
+                        "password": "[parameters('AdminPassword')]"
+                    }
+                },
+                "securityProfile": {
+                    "openAccess": "Disabled"
+                },
+                "rosterProfile": {},
+                "labPlanId": "[resourceId('Microsoft.LabServices/labPlans', variables('labPlans_name'))]",
+                "title": "[parameters('LabName')]"
             }
         }
-    ],
-    "outputs": {
-    }
+    ]
 }
