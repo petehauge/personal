@@ -3,8 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "LabName": {
-            "type": "string",
-            "value": "Ethical-Hacking-Lab"
+            "type": "string"
         },
         "AdminUser": {
             "type": "string"
