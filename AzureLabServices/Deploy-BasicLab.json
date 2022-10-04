@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "Contributor Object Ids": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "User object IDs (comma seperated) to grant contributor rights on the environment resource group.  If left blank, the resource group will be created but no additional permissions will be added"
+            }
+        }
+    },
+    "variables": {
+        "roleDefinition_Contributor": "[resourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "contributorUserIds": "[split(trim(parameters('Contributor Object Ids')), ',')]"
+    },
+    "resources": [
+        {
+            "condition": "[greater(length(trim(parameters('Contributor Object Ids'))), 0)]",
+            "name": "[guid(variables('roleDefinition_Contributor'), trim(variables('contributorUserIds')[copyIndex()]))]",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "copy": {
+                "name": "roleAssignmentCopy",
+                "count": "[length(variables('contributorUserIds'))]"
+            },
+            "properties": {
+                "roleDefinitionId": "[variables('roleDefinition_Contributor')]",
+                "principalId": "[trim(variables('contributorUserIds')[copyIndex()])]",
+                "scope": "[resourceGroup().id]"
+            }
+        }
+    ],
+    "outputs": {
+    }
+}
