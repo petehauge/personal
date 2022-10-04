@@ -43,7 +43,7 @@
                 "virtualMachineProfile": {
                     "createOption": "TemplateVM",
                     "imageReference": {
-                        "id": "[concat(parameters('galleries_EnterpriseSharedImages_externalid'), '/images/Ethical-Hacking')]"
+                        "id": "[concat(variables('externalGalleryId'), '/images/Ethical-Hacking')]"
                     },
                     "sku": {
                         "name": "Classic_Dsv4_4_16GB_128_P_SSD",
