@@ -4,7 +4,7 @@
     "parameters": {
         "LabName": {
             "type": "string",
-            "defaultValue": "Ethical-Hacking",
+            "defaultValue": "Ethical-Hacking"
         },
         "AdminUser": {
             "type": "string"
