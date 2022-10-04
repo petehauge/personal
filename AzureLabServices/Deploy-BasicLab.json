@@ -3,14 +3,22 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "LabName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "Ethical-Hacking",
         },
         "AdminUser": {
             "type": "string"
         },
         "AdminPassword": {
             "type": "securestring"
-        }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+              "description": "Location for all resources."
+            }
+        },
     },
     "variables": {
         "labPlans_name": "LabPlan-Basic-WestUS",
